@@ -5,57 +5,49 @@ class ListaTarefaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> tarefas = [
+      {"titulo": "Fazer compra", "situacao": false},
+      {"titulo": "Pagar Conta de Luz", "situacao": true},
+      {"titulo": "Revisar aula de TI", "situacao": true},
+      {"titulo": "Fazer fatura do Inter", "situacao": false},
+      {"titulo": "Levar carro na manutençã", "situacao": false},
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Minhas Tarefas"),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 95, 127, 143),
       ),
-      body: ListView(
+      body: ListView.builder(
         padding: EdgeInsets.all(12),
-        children: const [
-          Card(
+        itemCount: tarefas.length,
+        itemBuilder: (context, index) {
+          final tarefa = tarefas[index];
+          final bool situacao = tarefa['situacao'];
+
+          return Card(
             child: ListTile(
-              leading: Icon(Icons.check_circle, color: Colors.green),
-              title: Text(
-                "Configurar o ambiente de desenvolvimento",
-                style: TextStyle(decoration: TextDecoration.lineThrough),
+              leading: Icon(
+                situacao ? Icons.check_circle : Icons.circle_outlined,
+                color: situacao ? Colors.green : Colors.grey,
               ),
-              subtitle: Text("Concluída"),
+              title: Text(
+                tarefa['titulo'],
+                style: TextStyle(
+                  decoration: situacao
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                ),
+              ),
+              subtitle: Text(situacao ? "Concluída" : "Pendente"),
               trailing: Icon(
                 Icons.delete_outline,
                 color: Colors.grey,
               ),
             ),
-          ),
-          Card(
-            child: ListTile(
-              leading: Icon(Icons.circle_outlined, color: Colors.grey),
-              title: Text(
-                "Fazer a atividade flutter",
-              ),
-              subtitle: Text("Pendente"),
-              trailing: Icon(
-                Icons.delete_outline,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          Card(
-            child: ListTile(
-              leading: Icon(Icons.check_circle, color: Colors.green),
-              title: Text(
-                "Arrumar o carro",
-                style: TextStyle(decoration: TextDecoration.lineThrough),
-              ),
-              subtitle: Text("Concluída"),
-              trailing: Icon(
-                Icons.delete_outline,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-        ],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},

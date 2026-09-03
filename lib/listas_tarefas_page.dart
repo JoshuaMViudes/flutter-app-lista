@@ -10,7 +10,7 @@ class ListaTarefaPage extends StatelessWidget {
       {"titulo": "Pagar Conta de Luz", "situacao": true},
       {"titulo": "Revisar aula de TI", "situacao": true},
       {"titulo": "Fazer fatura do Inter", "situacao": false},
-      {"titulo": "Levar carro na manutençã", "situacao": false},
+      {"titulo": "Levar carro na manutenção", "situacao": false},
     ];
 
     return Scaffold(

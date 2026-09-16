@@ -24,8 +24,34 @@ class _ListaTarefaPageState extends State<ListaTarefaPage> {
     });
   }
 
+  // Marcar ou desmarcar a tarefa como concluída
+  Future<void> marcarSituacao(int index) async {
+    final tarefa = tarefas[index];
+
+    final novoValor = tarefa['situacao'] == 1 ? 0 : 1;
+
+    await DatabaseHelper.atualizarTarefa(
+      tarefa['id'],
+      novoValor,
+    );
+
+    carregarTarefas();
+  }
+
+  // Deletar uma tarefa
+  Future<void> deletarTarefa(int index) async {
+    final tarefa = tarefas[index];
+
+    await DatabaseHelper.deletarTarefa(
+      tarefa['id'],
+    );
+
+    carregarTarefas();
+  }
+
   void adicionarTarefa() {
     final novaTarefaController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (context) {
@@ -45,7 +71,7 @@ class _ListaTarefaPageState extends State<ListaTarefaPage> {
           actions: [
             TextButton(
               onPressed: () {
-                //Função para fechar qualquer janela/tela
+                // Função para fechar qualquer janela/tela
                 Navigator.pop(context);
               },
               child: Text('Cancelar'),
@@ -53,7 +79,10 @@ class _ListaTarefaPageState extends State<ListaTarefaPage> {
             TextButton(
               onPressed: () async {
                 if (novaTarefaController.text.isNotEmpty) {
-                  await DatabaseHelper.inserirTarefa(novaTarefaController.text);
+                  await DatabaseHelper.inserirTarefa(
+                    novaTarefaController.text,
+                  );
+
                   carregarTarefas();
 
                   if (!context.mounted) return;
@@ -77,23 +106,33 @@ class _ListaTarefaPageState extends State<ListaTarefaPage> {
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 95, 127, 143),
       ),
+
       body: tarefas.isEmpty
           ? Center(
-              child: Text('Nenhuma tarefa ainda. Toque em + para adicionar'),
+              child: Text(
+                'Nenhuma tarefa ainda. Toque em + para adicionar',
+              ),
             )
           : ListView.builder(
               padding: EdgeInsets.all(12),
               itemCount: tarefas.length,
               itemBuilder: (context, index) {
                 final tarefa = tarefas[index];
+
                 final bool situacao = tarefa['situacao'] == 1;
 
                 return Card(
                   child: ListTile(
-                    leading: Icon(
-                      situacao ? Icons.check_circle : Icons.circle_outlined,
-                      color: situacao ? Colors.green : Colors.grey,
+                    // Botão para marcar/desmarcar
+                    leading: GestureDetector(
+                      onTap: () => marcarSituacao(index),
+                      child: Icon(
+                        situacao ? Icons.check_circle : Icons.circle_outlined,
+                        color: situacao ? Colors.green : Colors.grey,
+                      ),
                     ),
+
+                    // Título da tarefa
                     title: Text(
                       tarefa['titulo'],
                       style: TextStyle(
@@ -102,20 +141,30 @@ class _ListaTarefaPageState extends State<ListaTarefaPage> {
                             : TextDecoration.none,
                       ),
                     ),
-                    subtitle: Text(situacao ? "Concluída" : "Pendente"),
-                    trailing: Icon(
-                      Icons.delete_outline,
-                      color: Colors.grey,
+
+                    // Situação da tarefa
+                    subtitle: Text(
+                      situacao ? "Concluída" : "Pendente",
+                    ),
+
+                    // Botão para deletar
+                    trailing: GestureDetector(
+                      onTap: () => deletarTarefa(index),
+                      child: Icon(
+                        Icons.delete_outline,
+                        color: Colors.grey,
+                      ),
                     ),
                   ),
                 );
               },
             ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () => adicionarTarefa(),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
-        //shape: CircleBorder(),
+        // shape: CircleBorder(),
         child: Icon(Icons.add),
       ),
     );

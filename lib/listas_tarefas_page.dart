@@ -1,4 +1,5 @@
 import 'package:app_listatarefas/database_helper.dart';
+import 'package:app_listatarefas/sobre_app_page.dart';
 import 'package:flutter/material.dart';
 
 class ListaTarefaPage extends StatefulWidget {
@@ -105,6 +106,52 @@ class _ListaTarefaPageState extends State<ListaTarefaPage> {
         title: const Text("Minhas Tarefas"),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 95, 127, 143),
+      ),
+
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.indigo),
+              child: Text(
+                "Minhas Tarefas",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.list),
+              title: Text("Todas as Tarefas"),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.check_circle),
+              title: Text("Concluídas"),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.check_circle_outline),
+              title: Text("Pendentes"),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.info_outline),
+              title: Text("Sobre o App"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SobreAppPage(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
 
       body: tarefas.isEmpty
